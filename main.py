@@ -7,6 +7,7 @@ from matplotlib import pyplot
 
 SIZE_OF_SEQUENCE = 36
 
+
 def time_before(last_event, current_event):
     difference = current_event - last_event
     return difference.seconds
@@ -15,7 +16,7 @@ def time_before(last_event, current_event):
 def split_sequence(PDList, n_steps):
     X, y = list(), list()
     for j in PDList:
-        sequence=j['value'].tolist()
+        sequence = j['value'].tolist()
         for i in range(len(sequence)):
             # find the end of this pattern
             end_ix = i + n_steps
@@ -27,6 +28,7 @@ def split_sequence(PDList, n_steps):
             X.append(seq_x)
             y.append(seq_y)
     return array(X), array(y)
+
 
 def get_data(filename):
     data = pd.read_csv(filename, delimiter=";")
@@ -41,6 +43,7 @@ def get_data(filename):
     data = data.dropna(subset=['value'])
     return data
 
+
 def sanitaze_data(data, SIZE_OF_SEQUENCE):
     datas = []
     start = 0
@@ -52,6 +55,7 @@ def sanitaze_data(data, SIZE_OF_SEQUENCE):
         if data.loc[index, 'next'] > 370:
             # print (data.loc[index])
             temp = data[start:index]
+            temp.reset_index(drop=True, inplace=True)
             start = index + 1
             datas.append(temp)
 
@@ -61,18 +65,20 @@ def sanitaze_data(data, SIZE_OF_SEQUENCE):
             newlist.append(i)
     return newlist
 
-input=get_data("data.csv")
-input=sanitaze_data(input, SIZE_OF_SEQUENCE)
+
+input = get_data("data.csv")
+input = sanitaze_data(input, SIZE_OF_SEQUENCE)
+
 X, y=split_sequence(input,SIZE_OF_SEQUENCE)
 n_features = 1
 X = X.reshape((X.shape[0], X.shape[1], n_features))
 # define model
 model = Sequential()
-model.add(LSTM(200, activation='relu', input_shape=(SIZE_OF_SEQUENCE, n_features)))
+model.add(LSTM(300, activation='relu', input_shape=(SIZE_OF_SEQUENCE, n_features)))
 model.add(Dense(1))
 model.compile(optimizer='adam', loss='mse')
 # fit model
-history=model.fit(X, y, validation_split=0.33, epochs=200, verbose=1, batch_size=10)
+history=model.fit(X, y, validation_split=0.33, epochs=200, verbose=2)
 print(history.history['loss'])
 pyplot.plot(history.history['loss'])
 pyplot.plot(history.history['val_loss'])
