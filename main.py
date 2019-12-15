@@ -74,12 +74,13 @@ n_features = 1
 X = X.reshape((X.shape[0], X.shape[1], n_features))
 # define model
 model = Sequential()
-model.add(LSTM(300, activation='relu', input_shape=(SIZE_OF_SEQUENCE, n_features)))
+model.add(LSTM(SIZE_OF_SEQUENCE*3, activation='relu', input_shape=(SIZE_OF_SEQUENCE, n_features)))
 model.add(Dense(1))
 model.compile(optimizer='adam', loss='mse')
 # fit model
-history=model.fit(X, y, validation_split=0.33, epochs=200, verbose=2)
+history=model.fit(X, y, validation_split=0.33, epochs=300, verbose=2)
 print(history.history['loss'])
+print(history.history['val_loss'])
 pyplot.plot(history.history['loss'])
 pyplot.plot(history.history['val_loss'])
 pyplot.title('model train vs validation loss')
