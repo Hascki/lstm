@@ -66,7 +66,7 @@ def sanitaze_data(data, SIZE_OF_SEQUENCE):
     return newlist
 
 
-input = get_data("data.csv")
+input = get_data("data_short.csv")
 input = sanitaze_data(input, SIZE_OF_SEQUENCE)
 
 X, y=split_sequence(input,SIZE_OF_SEQUENCE)
