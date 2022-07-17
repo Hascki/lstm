@@ -1,4 +1,6 @@
 import pandas as pd
+import sys
+from datetime import datetime
 from numpy import array
 from keras.models import Sequential
 from keras.layers import LSTM
@@ -66,8 +68,11 @@ def sanitaze_data(data, SIZE_OF_SEQUENCE):
     return newlist
 
 
-input = get_data("data_short.csv")
+input = get_data(sys.argv[1])
 input = sanitaze_data(input, SIZE_OF_SEQUENCE)
+
+filename=datetime.utcnow().isoformat()+'.png'
+filename=filename.replace(':','-')
 
 X, y=split_sequence(input,SIZE_OF_SEQUENCE)
 n_features = 1
@@ -87,4 +92,5 @@ pyplot.title('model train vs validation loss')
 pyplot.ylabel('loss')
 pyplot.xlabel('epoch')
 pyplot.legend(['train', 'validation'], loc='upper right')
+pyplot.savefig(filename, dpi=300)
 pyplot.show()
