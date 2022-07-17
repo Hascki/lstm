@@ -45,6 +45,12 @@ def get_data(filename):
     data = data.dropna(subset=['value'])
     return data
 
+def plot_set(data):
+    pyplot.plot(data['moment'],data['value'], linestyle='--', marker='o', color='b')
+    moment=data['moment'][0].strftime("%Y-%m-%dT%H-%M-%S")
+    filename='./data/'+moment+'.png'
+    pyplot.savefig(filename, dpi=300)
+    pyplot.close()
 
 def sanitaze_data(data, SIZE_OF_SEQUENCE):
     datas = []
@@ -63,6 +69,8 @@ def sanitaze_data(data, SIZE_OF_SEQUENCE):
 
     newlist = []
     for i in datas:
+        if i.shape[0] > 1:
+            plot_set(i)
         if i.shape[0] > SIZE_OF_SEQUENCE:
             newlist.append(i)
     return newlist
